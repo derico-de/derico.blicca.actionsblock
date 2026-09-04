@@ -67,6 +67,7 @@ author_email = "md@derico.de"
 content_types = []
 behaviors = []
 services = []
+views = ["aurora-block-actions"]
 
 [tool.pytest.ini_options]
 testpaths = ["src/derico/blicca/actionsblock/tests"]
