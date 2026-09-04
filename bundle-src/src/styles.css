@@ -1,0 +1,112 @@
+/*
+ * The Actions block's ONE stylesheet. It dresses BOTH surfaces — the React
+ * `view` (src/actions/ActionsView.tsx) and the Chameleon template
+ * (views/actions_block_view.pt) — through anatomy-class parity, block add-on
+ * contract §6.1. Packaging wraps this whole file in
+ *
+ *   @scope (.aurora-editor, .aurora-editor-portal, .aurora-blocks-view)
+ *       to (.aurora-pattern-island)
+ *
+ * (build-plugins/scope-wrap.ts).
+ *
+ * ── the rules of the road ───────────────────────────────────────────────
+ *
+ * 1. THE SEAM DECLARES NOTHING. Every `--actions-*` axis is spelled
+ *    `var(--actions-x, <literal>)` at its point of use, and this file
+ *    declares no `--actions-*` property anywhere. A property declared on
+ *    `.actions-block` would SHADOW a theme's inherited `:root` value and
+ *    force exactly the specificity escalation the seam exists to prevent.
+ * 2. THE DEFAULTS ARE PUBLISHED. The property table in `README.md` is the
+ *    contract and `test/seam-lockstep.test.ts` holds this file to it literal
+ *    for literal, in both directions.
+ * 3. DESCENT, NOT NAMES. Every rule descends from `.actions-block`, the
+ *    block's own root — never the host's `.block-actions` wrapper stamp. One
+ *    exception, marked where it appears: the editor's `.actions-notice`
+ *    chrome, which lives outside the root.
+ * 4. NEVER SELECT ON `[href]`. The canvas drops every `href` and keeps every
+ *    element, tag and class, so `[href]` is the one selector that can tell
+ *    the two surfaces apart.
+ * 5. NO `!important`, and no `outline`: the block sets no focus ring at all,
+ *    so the host's own `:focus-visible` reaches the links unopposed.
+ */
+
+/* ── the block root ─────────────────────────────────────────────────────── */
+
+.actions-block {
+  display: flex;
+  flex-direction: column;
+  /* The rhythm between the heading and the list. */
+  gap: var(--actions-flow, 0.5rem);
+  /* `0` ON PURPOSE: the host's background slot already pads the band, and a
+   * non-zero default would double-pad every banded block. */
+  padding: var(--actions-padding, 0);
+  box-sizing: border-box;
+  /* The Plate editable computes `white-space: pre-wrap` and it inherits into
+   * everything rendered inside it. Parity comes from STATING the value. */
+  white-space: normal;
+}
+
+/* ── the heading ────────────────────────────────────────────────────────── */
+
+/* Zeroing the margin is a PARITY statement: Barceloneta gives `h2` its own
+ * margins and Aurora's preflight zeroes them; `--actions-flow` is the handle
+ * that gives the rhythm back. Size only — no weight, no leading. */
+.actions-block .actions-title {
+  margin: 0;
+  font-size: var(--actions-title-size, 1rem);
+}
+
+/* ── the list ───────────────────────────────────────────────────────────── */
+
+.actions-block .actions-list {
+  display: flex;
+  /* `row` for a header or footer bar, `column` for a stacked menu — a seam
+   * axis, not stored data, so a theme decides once for every block. */
+  flex-direction: var(--actions-direction, row);
+  flex-wrap: wrap;
+  gap: var(--actions-gap, 1rem);
+  justify-content: var(--actions-justify, flex-start);
+  /* The UA's list styling, neutralised on both surfaces. */
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.actions-block .actions-item {
+  margin: 0;
+  padding: 0;
+}
+
+/* ── the links ──────────────────────────────────────────────────────────── */
+
+.actions-block .actions-link {
+  color: var(--actions-link-color, currentColor);
+  font-size: var(--actions-link-size, 1rem);
+  text-decoration: var(--actions-link-decoration, none);
+}
+
+/* Spelled without an attribute selector so it behaves identically on both
+ * surfaces (rule 4): `:hover` matches an anchor with no `href`. */
+.actions-block .actions-link:hover {
+  text-decoration: underline;
+}
+
+/* ── the editor's own chrome ────────────────────────────────────────────
+ *
+ * EXCEPTION TO DESCENT (rule 3): rendered OUTSIDE the block root, reachable
+ * from the scope root instead. Dressed with LITERALS ONLY — never an
+ * `--actions-*` — because it is the editor talking to the author, not part
+ * of the block's published surface, and a theme should not be able to
+ * restyle a notice into invisibility. Undressed in Aurora proper, where
+ * none of the scope roots exists; legible either way, being prose.
+ */
+
+.actions-notice {
+  margin-block: 0.5rem 0;
+  padding-inline-start: 0.5rem;
+  border-inline-start: 2px solid;
+  font-size: 0.8125rem;
+  line-height: 1.4;
+  /* A system colour — quiet on any ground, in either colour scheme. */
+  color: GrayText;
+}

@@ -61,7 +61,7 @@ import installLayout from '@plone/layout';
 import installCmsui from '@plone/cmsui';
 
 /**
- * The four widgets the promo's schema actually leans on, imported the same
+ * The four widgets a block's schema may lean on, imported the same
  * way `@plone/cmsui/config/widgets.ts` imports them.
  *
  * Imported INDEPENDENTLY rather than read back out of the registry, which is
@@ -103,7 +103,7 @@ export const UpstreamObjectBrowserWidget =
 
 /**
  * `@plone/blocks`' four widths, verbatim. `blockWidth` is a style field, so
- * this list is what the sidebar control offers; the promo declares
+ * this list is what the sidebar control offers; a block declares
  * `blockWidth` in its schema rather than fixing one (contract §1.4).
  */
 export const UPSTREAM_WIDTHS = [
@@ -126,9 +126,9 @@ export const UPSTREAM_WIDTHS = [
 ];
 
 /**
- * The blocks `@plone/blocks` registers. The promo must appear ALONGSIDE
+ * The blocks `@plone/blocks` registers. A block must appear ALONGSIDE
  * these, displacing none — `teaser` above all, which is why the block is
- * `promo` and not `teaser` (CONTEXT.md; registration is last-wins by key).
+ * no block claims an upstream key (registration is last-wins by key).
  */
 export const UPSTREAM_BLOCKS = ['image', 'teaser', 'video', 'listing'];
 
@@ -140,7 +140,7 @@ export const UPSTREAM_BLOCKS = ['image', 'teaser', 'video', 'listing'];
  *
  * Idempotent. `installBlocks` resets `blocksConfig` to `{}` and `installCmsui`
  * appends to `settings.cssLayers`, so a second call through a shared module
- * singleton would drop the promo's own registration and double the layer.
+ * singleton would drop the block's own registration and double the layer.
  * Tracked in a WeakSet rather than a marker property because `@plone/registry`
  * seals its config object — assigning to it throws, which is itself worth
  * knowing: nothing can bolt state onto the host's registry at runtime.
