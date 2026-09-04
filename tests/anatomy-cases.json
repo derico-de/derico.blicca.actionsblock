@@ -1,0 +1,213 @@
+{
+  "$comment": [
+    "The Actions block's anatomy, case by case: the stored node in, the exact markup out.",
+    "",
+    "Hand-authored and read by BOTH renderers' suites — the React `view`",
+    "(bundle-src/test/actions-anatomy.test.tsx) and the Chameleon template",
+    "(src/.../tests/test_view_actions_block_view.py). The two renderers must emit",
+    "the same anatomy element for element, because one scope-wrapped stylesheet",
+    "dresses both surfaces; this file is what holds them to a FIXED list rather",
+    "than to whichever renderer landed first.",
+    "",
+    "`html` is the markup INSIDE the host's block wrapper, on the PUBLIC surface.",
+    "The wrapper's own `block block-actions has--block-width--<w>` stamp is the",
+    "host's and is not our output.",
+    "",
+    "No whitespace between elements: the Plate editable computes",
+    "`white-space: pre-wrap`, so an inter-element newline becomes a real line box.",
+    "JSX drops it by construction; the server template strips its indentation.",
+    "",
+    "Both suites compare EXACTLY, up to attribute order (each sorts attributes",
+    "before comparing), and again as the SKELETON — every attribute but `class`",
+    "removed, text kept — which is the cross-renderer contract. The two renderers",
+    "emit identical attributes here: the catalog's `url` is the absolute URL Plone",
+    "computed for the request, and both emit it as-is.",
+    "",
+    "The editor surface is `html` with every `href` dropped (the canvas-safety",
+    "rule), and nothing else changed.",
+    "",
+    "`catalog` in `data` is the DERIVED key the server's serializer injects: every",
+    "offered category mapped to its `{id, title, url}` rows. A node without one is",
+    "a node the server has never serialized, and both renderers draw the empty root."
+  ],
+  "cases": [
+    {
+      "name": "empty",
+      "note": "Exactly one element: the root with the DEFAULT category and its label. Containers are never emitted empty, and the canvas's notices live outside the root.",
+      "data": {},
+      "html": "<nav class=\"actions-block has--category--site_actions\" aria-label=\"Site actions\"></nav>"
+    },
+    {
+      "name": "category-without-catalog",
+      "note": "A category chosen on a node the server has never serialized: the root still carries the EFFECTIVE category, so the author can recognise the block, and nothing else renders.",
+      "data": { "category": "user" },
+      "html": "<nav class=\"actions-block has--category--user\" aria-label=\"User actions\"></nav>"
+    },
+    {
+      "name": "site-actions",
+      "note": "The reference case: the stock site actions, one list item per row, each carrying its per-action modifier.",
+      "data": {
+        "category": "site_actions",
+        "catalog": {
+          "site_actions": [
+            { "id": "sitemap", "title": "Site Map", "url": "http://nohost/plone/sitemap" },
+            { "id": "accessibility", "title": "Accessibility", "url": "http://nohost/plone/accessibility-info" },
+            { "id": "contact", "title": "Contact", "url": "http://nohost/plone/contact-info" }
+          ]
+        }
+      },
+      "html": "<nav class=\"actions-block has--category--site_actions\" aria-label=\"Site actions\"><ul class=\"actions-list\"><li class=\"actions-item actions-item-sitemap\"><a class=\"actions-link\" href=\"http://nohost/plone/sitemap\">Site Map</a></li><li class=\"actions-item actions-item-accessibility\"><a class=\"actions-link\" href=\"http://nohost/plone/accessibility-info\">Accessibility</a></li><li class=\"actions-item actions-item-contact\"><a class=\"actions-link\" href=\"http://nohost/plone/contact-info\">Contact</a></li></ul></nav>"
+    },
+    {
+      "name": "title-and-list",
+      "note": "The optional heading sits above the list, inside the root, as an h2 — a block that never enters the outline is invisible to anyone navigating by heading.",
+      "data": {
+        "title": "More",
+        "category": "site_actions",
+        "catalog": {
+          "site_actions": [
+            { "id": "sitemap", "title": "Site Map", "url": "http://nohost/plone/sitemap" }
+          ]
+        }
+      },
+      "html": "<nav class=\"actions-block has--category--site_actions\" aria-label=\"Site actions\"><h2 class=\"actions-title\">More</h2><ul class=\"actions-list\"><li class=\"actions-item actions-item-sitemap\"><a class=\"actions-link\" href=\"http://nohost/plone/sitemap\">Site Map</a></li></ul></nav>"
+    },
+    {
+      "name": "title-only",
+      "note": "A heading with nothing under it still renders: it is the author's own content, and the list is conditional on its own.",
+      "data": { "title": "  More  " },
+      "html": "<nav class=\"actions-block has--category--site_actions\" aria-label=\"Site actions\"><h2 class=\"actions-title\">More</h2></nav>"
+    },
+    {
+      "name": "title-not-a-string",
+      "note": "Nothing is required and nothing is trusted: a title that is not a string is an absent title.",
+      "data": { "title": 42 },
+      "html": "<nav class=\"actions-block has--category--site_actions\" aria-label=\"Site actions\"></nav>"
+    },
+    {
+      "name": "picks-the-stored-category-out-of-the-whole-catalog",
+      "note": "The catalog carries EVERY offered category; only the stored one renders. That is what makes switching the category in the sidebar instant.",
+      "data": {
+        "category": "portal_tabs",
+        "catalog": {
+          "site_actions": [
+            { "id": "sitemap", "title": "Site Map", "url": "http://nohost/plone/sitemap" }
+          ],
+          "portal_tabs": [
+            { "id": "index_html", "title": "Home", "url": "http://nohost/plone" }
+          ]
+        }
+      },
+      "html": "<nav class=\"actions-block has--category--portal_tabs\" aria-label=\"Portal tabs\"><ul class=\"actions-list\"><li class=\"actions-item actions-item-index_html\"><a class=\"actions-link\" href=\"http://nohost/plone\">Home</a></li></ul></nav>"
+    },
+    {
+      "name": "object-buttons",
+      "note": "Every offered category is spelled the same way; the label is the table's.",
+      "data": {
+        "category": "object_buttons",
+        "catalog": {
+          "object_buttons": [
+            { "id": "delete", "title": "Delete", "url": "http://nohost/plone/doc/delete_confirmation" },
+            { "id": "rename", "title": "Rename", "url": "http://nohost/plone/doc/object_rename" }
+          ]
+        }
+      },
+      "html": "<nav class=\"actions-block has--category--object_buttons\" aria-label=\"Object buttons\"><ul class=\"actions-list\"><li class=\"actions-item actions-item-delete\"><a class=\"actions-link\" href=\"http://nohost/plone/doc/delete_confirmation\">Delete</a></li><li class=\"actions-item actions-item-rename\"><a class=\"actions-link\" href=\"http://nohost/plone/doc/object_rename\">Rename</a></li></ul></nav>"
+    },
+    {
+      "name": "unknown-category-falls-back",
+      "note": "A category the block does not offer renders the DEFAULT one, from the same catalog, so a hand-authored node still shows something the author recognises.",
+      "data": {
+        "category": "bogus",
+        "catalog": {
+          "site_actions": [
+            { "id": "sitemap", "title": "Site Map", "url": "http://nohost/plone/sitemap" }
+          ]
+        }
+      },
+      "html": "<nav class=\"actions-block has--category--site_actions\" aria-label=\"Site actions\"><ul class=\"actions-list\"><li class=\"actions-item actions-item-sitemap\"><a class=\"actions-link\" href=\"http://nohost/plone/sitemap\">Site Map</a></li></ul></nav>"
+    },
+    {
+      "name": "category-missing-from-catalog",
+      "note": "A serialized node whose stored category has no rows — anonymous asking for object buttons, say — is the empty root. The canvas says why; the public page says nothing.",
+      "data": {
+        "category": "object_buttons",
+        "catalog": { "site_actions": [ { "id": "sitemap", "title": "Site Map", "url": "http://nohost/plone/sitemap" } ], "object_buttons": [] }
+      },
+      "html": "<nav class=\"actions-block has--category--object_buttons\" aria-label=\"Object buttons\"></nav>"
+    },
+    {
+      "name": "catalog-not-an-object",
+      "note": "A hand-authored catalog of the wrong shape is no catalog at all.",
+      "data": { "category": "user", "catalog": "login" },
+      "html": "<nav class=\"actions-block has--category--user\" aria-label=\"User actions\"></nav>"
+    },
+    {
+      "name": "row-without-title-dropped",
+      "note": "A link with no text is worse than an absent one; the row renders nothing.",
+      "data": {
+        "catalog": {
+          "site_actions": [
+            { "id": "sitemap", "title": "", "url": "http://nohost/plone/sitemap" },
+            { "id": "contact", "title": "Contact", "url": "http://nohost/plone/contact-info" }
+          ]
+        }
+      },
+      "html": "<nav class=\"actions-block has--category--site_actions\" aria-label=\"Site actions\"><ul class=\"actions-list\"><li class=\"actions-item actions-item-contact\"><a class=\"actions-link\" href=\"http://nohost/plone/contact-info\">Contact</a></li></ul></nav>"
+    },
+    {
+      "name": "row-without-url-dropped",
+      "note": "Symmetric with the title rule: a link that goes nowhere renders nothing.",
+      "data": {
+        "catalog": {
+          "site_actions": [
+            { "id": "sitemap", "title": "Site Map" },
+            { "id": "contact", "title": "Contact", "url": "http://nohost/plone/contact-info" }
+          ]
+        }
+      },
+      "html": "<nav class=\"actions-block has--category--site_actions\" aria-label=\"Site actions\"><ul class=\"actions-list\"><li class=\"actions-item actions-item-contact\"><a class=\"actions-link\" href=\"http://nohost/plone/contact-info\">Contact</a></li></ul></nav>"
+    },
+    {
+      "name": "unscreened-url-dropped",
+      "note": "The catalog travels inside a JSON node anyone with API access can hand-author, so a URL is screened like typed input: a scheme outside the allowlist is treated exactly as no URL.",
+      "data": {
+        "catalog": {
+          "site_actions": [
+            { "id": "evil", "title": "Evil", "url": "javascript:alert(1)" },
+            { "id": "mail", "title": "Mail", "url": "mailto:md@derico.de" },
+            { "id": "rel", "title": "Relative", "url": "/plone/sitemap" }
+          ]
+        }
+      },
+      "html": "<nav class=\"actions-block has--category--site_actions\" aria-label=\"Site actions\"><ul class=\"actions-list\"><li class=\"actions-item actions-item-mail\"><a class=\"actions-link\" href=\"mailto:md@derico.de\">Mail</a></li><li class=\"actions-item actions-item-rel\"><a class=\"actions-link\" href=\"/plone/sitemap\">Relative</a></li></ul></nav>"
+    },
+    {
+      "name": "unsafe-id-gets-no-modifier",
+      "note": "An id that is not a slug gets no per-action class rather than an escaped one; the base class always stays.",
+      "data": {
+        "catalog": {
+          "site_actions": [
+            { "id": "site map", "title": "Site Map", "url": "http://nohost/plone/sitemap" },
+            { "title": "Contact", "url": "http://nohost/plone/contact-info" }
+          ]
+        }
+      },
+      "html": "<nav class=\"actions-block has--category--site_actions\" aria-label=\"Site actions\"><ul class=\"actions-list\"><li class=\"actions-item\"><a class=\"actions-link\" href=\"http://nohost/plone/sitemap\">Site Map</a></li><li class=\"actions-item\"><a class=\"actions-link\" href=\"http://nohost/plone/contact-info\">Contact</a></li></ul></nav>"
+    },
+    {
+      "name": "rows-of-the-wrong-shape-skipped",
+      "note": "A row that is not an object is skipped, and whitespace around a title or URL is trimmed.",
+      "data": {
+        "catalog": {
+          "site_actions": [
+            "sitemap",
+            null,
+            { "id": "contact", "title": "  Contact ", "url": " http://nohost/plone/contact-info " }
+          ]
+        }
+      },
+      "html": "<nav class=\"actions-block has--category--site_actions\" aria-label=\"Site actions\"><ul class=\"actions-list\"><li class=\"actions-item actions-item-contact\"><a class=\"actions-link\" href=\"http://nohost/plone/contact-info\">Contact</a></li></ul></nav>"
+    }
+  ]
+}

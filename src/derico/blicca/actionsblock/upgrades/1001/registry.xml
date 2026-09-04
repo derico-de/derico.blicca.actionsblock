@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<registry>
+
+  <!-- ONE IAuroraBlockAddon record for the one block this package ships
+       (block add-on contract §3.2). Discovery is per site, so the record is
+       what makes the committed bundle reachable at all: without it nothing
+       loads the editor half, however correct the JS is.
+
+       Not a `plone.bundles` record: a bundle emits `<script src defer>`, not
+       `type="module"`, so the bundle's bare `react` / `platejs` imports would
+       miss the import map @@aurora-edit emits and a SECOND React would load. -->
+  <records
+      interface="plone.blicca.auroraeditor.interfaces.IAuroraBlockAddon"
+      prefix="plone.blicca.auroraeditor.blockaddons/derico.blicca.actionsblock.actions"
+      >
+
+    <!-- `++plone++`, never `++resource++`: two URLs for one JS module means
+         two module instances, hence two Reacts. The directory is registered
+         by the `plone:static` node in configure.zcml; the two spellings have
+         to stay in lockstep. -->
+    <value key="bundle">++plone++derico.blicca.actionsblock/actions-block.js</value>
+
+    <!-- The FLOOR the block needs, not the host's current version. A §2.4
+         mismatch is a fail-soft skip: the block silently vanishes from the
+         slash menu. Compatible iff same major and host minor >= declared
+         minor, so "1.0" is the most permissive compatible declaration. This
+         says nothing about the package's Python imports, which are versioned
+         by the `plone.blicca.auroraeditor>=1.0.0a2` floor in pyproject.toml. -->
+    <value key="block_api">1.0</value>
+
+    <!-- The scope-wrapped sheet that dresses BOTH surfaces: the wrapper links
+         it in the head of the edit page and of the public blocks view alike. -->
+    <value key="css">++plone++derico.blicca.actionsblock/actions-block.css</value>
+
+    <!-- Diagnostics and insert-gating, never dispatch. -->
+    <value key="types">
+      <element>actions</element>
+    </value>
+
+    <!-- No `permission`: the block is generic and for every editor. -->
+
+    <value key="enabled">True</value>
+    <value key="weight">100</value>
+  </records>
+
+</registry>

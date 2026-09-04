@@ -1,4 +1,5 @@
 """Testing setup for derico.blicca.actionsblock."""
+
 import os
 
 import plone.app.theming
