@@ -1,0 +1,31 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:genericsetup="http://namespaces.zope.org/genericsetup"
+    i18n_domain="derico.blicca.actionsblock">
+
+  <genericsetup:registerProfile
+      name="1001"
+      title="derico.blicca.actionsblock: upgrade to 1001"
+      directory="1001"
+      provides="Products.GenericSetup.interfaces.EXTENSION"
+      />
+
+  <genericsetup:upgradeSteps
+      source="1000"
+      destination="1001"
+      profile="derico.blicca.actionsblock:default">
+
+    <genericsetup:upgradeStep
+        title="Register the Actions block add-on record"
+        description="Import the IAuroraBlockAddon record that makes the committed actions bundle discoverable"
+        handler=".v1001.upgrade"
+        />
+
+    <genericsetup:upgradeDepends
+        title="Apply profile version 1001"
+        import_profile="derico.blicca.actionsblock.upgrades:1001"
+        />
+
+  </genericsetup:upgradeSteps>
+
+</configure>
