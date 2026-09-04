@@ -25,6 +25,43 @@
       directory="profiles/uninstall"
       />
 
+  <!-- The catalog is the server's: which actions the current user gets on
+       the current context is derived at load time by this pair and stripped
+       again on save (block add-on contract §5.3). Neither renderer computes
+       an action itself. The deserializer is not optional — unpaired, the
+       derived catalog would be written back on the next save and go stale
+       the moment a permission or a login changes. -->
+  <subscriber
+      factory=".actions_transform.ActionsCatalogSerializer"
+      provides="plone.restapi.interfaces.IBlockFieldSerializationTransformer"
+      />
+  <subscriber
+      factory=".actions_transform.ActionsCatalogSerializerRoot"
+      provides="plone.restapi.interfaces.IBlockFieldSerializationTransformer"
+      />
+  <subscriber
+      factory=".actions_transform.ActionsCatalogDeserializer"
+      provides="plone.restapi.interfaces.IBlockFieldDeserializationTransformer"
+      />
+  <subscriber
+      factory=".actions_transform.ActionsCatalogDeserializerRoot"
+      provides="plone.restapi.interfaces.IBlockFieldDeserializationTransformer"
+      />
+
+  <!-- Serves the committed editor bundle and its scope-wrapped sheet as
+       ++plone++derico.blicca.actionsblock/... (block add-on contract §3.1:
+       artifacts are committed, no Node at install time).
+
+       `type="plone"` is not cosmetic. ++resource++ would serve the very same
+       file under a second URL, and two URLs for one JS module means two
+       module instances, hence two Reacts, hence a block that throws inside
+       Plate. The registry record's `bundle` and `css` spell this same name. -->
+  <plone:static
+      name="derico.blicca.actionsblock"
+      type="plone"
+      directory="static"
+      />
+
   <genericsetup:importStep
       name="derico.blicca.actionsblock-uninstall"
       title="Derico Blicca Actionsblock uninstall"

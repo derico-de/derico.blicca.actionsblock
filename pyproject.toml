@@ -25,6 +25,10 @@ keywords = ["Plone", "CMS"]
 
 dependencies = [
     "Plone>=6.0",
+    # The block imports plone.blicca.auroraeditor.rendering, which is versioned by
+    # this distribution and NOT by the block-api number the registry record declares.
+    # The two signals are independent; this add-on needs both.
+    "plone.blicca.auroraeditor>=1.0.0a2",
     "setuptools<81",
 ]
 
@@ -38,10 +42,10 @@ test = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/derico.blicca/derico.blicca.actionsblock"
-Documentation = "https://github.com/derico.blicca/derico.blicca.actionsblock"
-Repository = "https://github.com/derico.blicca/derico.blicca.actionsblock.git"
-Issues = "https://github.com/derico.blicca/derico.blicca.actionsblock/issues"
+Homepage = "https://github.com/derico-de/derico.blicca.actionsblock"
+Documentation = "https://github.com/derico-de/derico.blicca.actionsblock"
+Repository = "https://github.com/derico-de/derico.blicca.actionsblock.git"
+Issues = "https://github.com/derico-de/derico.blicca.actionsblock/issues"
 
 [project.entry-points."z3c.autoinclude.plugin"]
 target = "plone"

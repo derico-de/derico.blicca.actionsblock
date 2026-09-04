@@ -1,27 +1,30 @@
-<html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:tal="http://xml.zope.org/namespaces/tal"
-      xmlns:metal="http://xml.zope.org/namespaces/metal"
-      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
-      lang="en"
-      metal:use-macro="context/main_template/macros/master"
-      i18n_domain="derico.blicca.actionsblock">
+<nav xmlns:tal="http://xml.zope.org/namespaces/tal"
+     tal:define="title view/title;
+                 entries view/entries"
+     tal:attributes="class view/root_class;
+                     aria-label view/label">
+  <!--! The Actions block's anatomy: the same markup
+        `bundle-src/src/actions/ActionsView.tsx` emits. One scope-wrapped
+        stylesheet dresses both surfaces, so an element added here without a
+        peer there is a bug in both.
 
-  <body>
-    <metal:title fill-slot="content-title">
-      <h1 class="documentFirstHeading" tal:content="structure context/@@title">
-        Title
-      </h1>
-    </metal:title>
+        Commentary must use the `!` form. Chameleon refuses an ASCII double
+        hyphen anywhere inside a comment, and an ordinary HTML comment would
+        ship to every visitor besides.
 
-    <metal:description fill-slot="content-description">
-      <p class="documentDescription" tal:content="structure context/@@description">
-        Description
-      </p>
-    </metal:description>
+        The indentation below is stripped by `ActionsBlockView.__call__`; see
+        its docstring for why an inter-element newline is not cosmetic here.
 
-    <metal:content-core fill-slot="content-core">
-      <h2>ActionsBlockView</h2>
-      <p>Public renderer for the Aurora Actions block</p>
-    </metal:content-core>
-  </body>
-</html>
+        The root is always emitted, with the EFFECTIVE category and its label;
+        the heading and the list are each conditional on their own content, so
+        a node with nothing to show is exactly one element. -->
+  <h2 class="actions-title"
+      tal:condition="title"
+      tal:content="title">Title</h2>
+  <ul class="actions-list" tal:condition="entries">
+    <li tal:repeat="entry entries"
+        tal:attributes="class entry/css"><a class="actions-link"
+         tal:attributes="href entry/href"
+         tal:content="entry/title">Title</a></li>
+  </ul>
+</nav>
