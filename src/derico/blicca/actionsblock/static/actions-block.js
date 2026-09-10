@@ -62,7 +62,7 @@ function entries(data) {
   }
   return found;
 }
-const EDIT_SUFFIX = /\/(?:@@aurora-edit|edit)\/?$/;
+const EDIT_SUFFIX = /\/(?:@@[^/]+|edit)\/?$/;
 function apiPath() {
   const settings = config.settings;
   const value = settings?.apiPath;

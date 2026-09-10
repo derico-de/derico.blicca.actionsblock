@@ -30,21 +30,18 @@
        again on save (block add-on contract §5.3). Neither renderer computes
        an action itself. The deserializer is not optional — unpaired, the
        derived catalog would be written back on the next save and go stale
-       the moment a permission or a login changes. -->
+       the moment a permission or a login changes.
+
+       Registered for ANY context (`@adapter(Interface, layer)`), because the
+       context a block is serialized against is not always the page carrying
+       it: an inherited footer is rendered against its carrier, which need not
+       have the IBlocks behavior. actions_transform.py says why. -->
   <subscriber
       factory=".actions_transform.ActionsCatalogSerializer"
       provides="plone.restapi.interfaces.IBlockFieldSerializationTransformer"
       />
   <subscriber
-      factory=".actions_transform.ActionsCatalogSerializerRoot"
-      provides="plone.restapi.interfaces.IBlockFieldSerializationTransformer"
-      />
-  <subscriber
       factory=".actions_transform.ActionsCatalogDeserializer"
-      provides="plone.restapi.interfaces.IBlockFieldDeserializationTransformer"
-      />
-  <subscriber
-      factory=".actions_transform.ActionsCatalogDeserializerRoot"
       provides="plone.restapi.interfaces.IBlockFieldDeserializationTransformer"
       />
 

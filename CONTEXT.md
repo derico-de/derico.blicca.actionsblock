@@ -64,7 +64,9 @@ author is never offered one in the sidebar.
 The canvas's one exception to reading the [[catalog]] from the node: a block
 the server has never serialized — freshly inserted — carries none, so the
 editor fetches `@actions` for the object being edited, once per page, and
-previews from that. The `view` never fetches; in Aurora proper it is the
+previews from that. The object is the edit URL with its view name removed —
+any `@@<view>`, so every Blicca edit surface works, the ones this package has
+never heard of included. The `view` never fetches; in Aurora proper it is the
 public rendering. Under Blicca the fetch is authenticated by the session
 cookie; under Aurora it is anonymous, which is a truthful preview of a
 visitor's list.

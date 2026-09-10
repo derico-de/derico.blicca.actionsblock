@@ -21,18 +21,25 @@ holds the two level.
 
 Registered as ``(context, request)`` subscription adapters providing
 ``IBlockFieldSerializationTransformer`` / ``IBlockFieldDeserializationTransformer``,
-for both ``IBlocks`` content and the site root — a footer stored on the root
-renders on every page. plone.restapi's ``NestedBlocksVisitor`` recurses into
-the somersault value tree, so an actions block nested in a Plate tree is
-transformed too, on restapi GET and on classic rendering alike.
+for ANY context, not for ``IBlocks`` content and the site root only. The
+catalog depends on the context and the user alone, and the context a block is
+serialized against is not always the page carrying it: an inherited footer is
+rendered against its *carrier* (a language root folder carries
+``collective.volto.footer``'s behavior and not ``IBlocks``), and a field
+surface (contract ADR 0015) stores blocks outside the ``blocks`` field
+entirely. Narrower registrations do not fail loudly on those — the transformer
+simply never runs and the block draws its empty root, on every page of the
+site. The ``block_type`` gate is what keeps this from touching anything else.
+
+plone.restapi's ``NestedBlocksVisitor`` recurses into the somersault value
+tree, so an actions block nested in a Plate tree is transformed too, on
+restapi GET and on classic rendering alike.
 
 Worked example: ``plone.blicca.auroraeditor``'s ``listing_transform.py``.
 """
 
 import logging
 
-from plone.base.interfaces import IPloneSiteRoot
-from plone.restapi.behaviors import IBlocks
 from plone.restapi.interfaces import IBlockFieldDeserializationTransformer
 from plone.restapi.interfaces import IBlockFieldSerializationTransformer
 from plone.restapi.serializer.converters import json_compatible
@@ -40,6 +47,7 @@ from zope.component import adapter
 from zope.component import getMultiAdapter
 from zope.i18n import translate
 from zope.interface import implementer
+from zope.interface import Interface
 
 from derico.blicca.actionsblock.actions_data import CATEGORIES
 from derico.blicca.actionsblock.blocks import ACTIONS_BLOCK_TYPE
@@ -79,7 +87,9 @@ def actions_catalog(context, request):
     return result
 
 
-class ActionsCatalogSerializerBase:
+@implementer(IBlockFieldSerializationTransformer)
+@adapter(Interface, IDericoBliccaActionsblockLayer)
+class ActionsCatalogSerializer:
     """Inject the catalog for the current user and context."""
 
     order = 200
@@ -108,19 +118,9 @@ class ActionsCatalogSerializerBase:
         return value
 
 
-@implementer(IBlockFieldSerializationTransformer)
-@adapter(IBlocks, IDericoBliccaActionsblockLayer)
-class ActionsCatalogSerializer(ActionsCatalogSerializerBase):
-    """Inject the catalog for content with the IBlocks behavior."""
-
-
-@implementer(IBlockFieldSerializationTransformer)
-@adapter(IPloneSiteRoot, IDericoBliccaActionsblockLayer)
-class ActionsCatalogSerializerRoot(ActionsCatalogSerializerBase):
-    """Inject the catalog on the site root."""
-
-
-class ActionsCatalogDeserializerBase:
+@implementer(IBlockFieldDeserializationTransformer)
+@adapter(Interface, IDericoBliccaActionsblockLayer)
+class ActionsCatalogDeserializer:
     """Strip the derived catalog before the block is persisted.
 
     Unpaired, the serializer's output would be written back on the next save
@@ -138,15 +138,3 @@ class ActionsCatalogDeserializerBase:
         for key in DERIVED_FIELDS:
             value.pop(key, None)
         return value
-
-
-@implementer(IBlockFieldDeserializationTransformer)
-@adapter(IBlocks, IDericoBliccaActionsblockLayer)
-class ActionsCatalogDeserializer(ActionsCatalogDeserializerBase):
-    """Strip the catalog for content with the IBlocks behavior."""
-
-
-@implementer(IBlockFieldDeserializationTransformer)
-@adapter(IPloneSiteRoot, IDericoBliccaActionsblockLayer)
-class ActionsCatalogDeserializerRoot(ActionsCatalogDeserializerBase):
-    """Strip the catalog on the site root."""

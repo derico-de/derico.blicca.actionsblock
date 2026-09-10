@@ -20,9 +20,9 @@
  * - `config.settings.apiPath` is a `@plone/types` Settings field, set by
  *   both hosts.
  * - The path of the object being edited is read off `location`: Blicca
- *   edits at `<object>/@@aurora-edit`, Aurora at `<object>/edit`. Neither
+ *   edits at `<object>/@@<surface>`, Aurora at `<object>/edit`. Neither
  *   host hands a block component its content URL, and this is the one
- *   fact both edit surfaces share.
+ *   fact every edit surface shares.
  * - The fetch is same-origin with cookies, which is what authenticates it
  *   under Blicca (the classic session cookie) and makes it anonymous under
  *   Aurora, whose token never reaches a plain `fetch`. Anonymous is still a
@@ -38,8 +38,17 @@ export type Catalog = Record<string, unknown>;
 
 type Location = { origin: string; pathname: string };
 
-/** The edit-route suffixes the two hosts put after the object's path. */
-const EDIT_SUFFIX = /\/(?:@@aurora-edit|edit)\/?$/;
+/**
+ * The edit route each host puts after the object's path.
+ *
+ * A Blicca edit surface is always `<object>/@@<view>` — `@@aurora-edit` for a
+ * page's blocks, `@@edit-footer` for the inherited footer, `@@edit-metadata`
+ * for the content fields — and Aurora's is `<object>/edit`. ANY `@@<view>` is
+ * stripped rather than a fixed list of them: the canvas mounts on surfaces
+ * this package will never be told about, a view name left in the path makes
+ * the fetch 404, and a 404 here is a block that draws its empty root.
+ */
+const EDIT_SUFFIX = /\/(?:@@[^/]+|edit)\/?$/;
 
 /** `config.settings.apiPath`, or `''`. */
 export function apiPath(): string {

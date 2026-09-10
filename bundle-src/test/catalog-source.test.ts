@@ -32,6 +32,27 @@ describe('actionsEndpoint', () => {
     );
   });
 
+  it('strips any Blicca edit surface, not only @@aurora-edit', () => {
+    // The footer surface (collective.blicca.footerblocks) edits the CARRIER
+    // at `<carrier>/@@edit-footer`; the metadata surface at
+    // `<object>/@@edit-metadata`. A suffix list that knows only
+    // `@@aurora-edit` leaves the view name in the path and the fetch 404s,
+    // so the block draws its empty root on the surface where a site's
+    // actions most obviously belong.
+    expect(
+      actionsEndpoint(at('http://host', '/Plone/de/@@edit-footer'), 'http://host/Plone'),
+    ).toBe('http://host/Plone/de/@actions');
+    expect(
+      actionsEndpoint(at('http://host', '/Plone/doc/@@edit-metadata'), 'http://host/Plone'),
+    ).toBe('http://host/Plone/doc/@actions');
+  });
+
+  it('strips a surface it has never heard of', () => {
+    expect(
+      actionsEndpoint(at('http://host', '/Plone/doc/@@edit-whatever-comes-next'), 'http://host/Plone'),
+    ).toBe('http://host/Plone/doc/@actions');
+  });
+
   it('leaves a page named edit alone when it is not the suffix', () => {
     expect(actionsEndpoint(at('http://app', '/edit/doc/edit'), 'http://backend')).toBe(
       'http://backend/edit/doc/@actions',

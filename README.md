@@ -141,9 +141,13 @@ The whole catalog is injected rather than only the chosen category. This
 keeps the derived data independent of the stored fields, so switching the
 category in the sidebar updates the preview instantly without a round trip.
 
-The transformers are registered for content with the `IBlocks` behavior and
-for the site root, so a block stored on the site root (a footer, for
-example) is filled in on every page.
+The transformers are registered for **any** context. The catalog depends on
+the context and the user alone, and the context a block is serialized against
+is not always the page carrying it: an inherited footer is rendered against
+its carrier — a language root folder or a subsite, which need not have the
+`IBlocks` behavior — and a field surface stores blocks outside the `blocks`
+field altogether. A narrower registration does not fail loudly on those; the
+transformer simply never runs, and the block draws its empty root.
 
 There are two renderers that produce the same markup:
 

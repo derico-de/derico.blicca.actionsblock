@@ -132,6 +132,21 @@ class TestSerializer(ActionsTransformTestCase):
         other = {"@type": "teaser", "title": "x"}
         assert self.serialize(other) == other
 
+    def test_fires_on_a_carrier_that_is_neither(self):
+        """A footer carrier: blocks stored on a field, on plain content.
+
+        ``collective.blicca.footerblocks`` renders the inherited footer with
+        the *carrier* as context — a language root folder, which carries the
+        editable-footer behavior and not ``IBlocks``. A registration narrowed
+        to ``IBlocks`` and the site root skips it, and the footer's actions
+        block draws its empty root on every page of the site.
+        """
+        folder = api.content.create(
+            container=self.portal, type="Folder", id="carrier", title="A carrier"
+        )
+        out = self.serialize(self.node(), context=folder)
+        assert "sitemap" in [row["id"] for row in out["catalog"]["site_actions"]]
+
 
 class TestRoundTrip(ActionsTransformTestCase):
     def test_serialize_then_deserialize_is_the_identity(self):
@@ -145,6 +160,13 @@ class TestRoundTrip(ActionsTransformTestCase):
     def test_deserialize_strips_on_the_site_root_too(self):
         polluted = self.node(catalog={})
         assert self.deserialize(polluted, context=self.portal) == self.node()
+
+    def test_deserialize_strips_on_any_carrier(self):
+        folder = api.content.create(
+            container=self.portal, type="Folder", id="carrier", title="A carrier"
+        )
+        polluted = self.node(catalog={})
+        assert self.deserialize(polluted, context=folder) == self.node()
 
 
 class TestRestapiParity(ActionsTransformTestCase):
