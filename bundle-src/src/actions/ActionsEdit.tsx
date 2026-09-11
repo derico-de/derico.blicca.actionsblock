@@ -42,8 +42,6 @@ export function ActionsEdit(props: ActionsEditProps) {
     );
   } else if (!rows.length) {
     notes.push(`No ${label} are available to you here, so the block renders empty.`);
-  } else {
-    notes.push('Previewed as you: visitors get the actions they are allowed to.');
   }
 
   return (

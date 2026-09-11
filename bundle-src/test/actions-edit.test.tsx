@@ -25,13 +25,13 @@ function deferred<T>() {
 describe('with the server’s catalog on the node', () => {
   afterEach(cleanup);
 
-  it('previews the rows, hrefs dropped, and says whose view it is', () => {
+  it('previews the rows, hrefs dropped, without a notice', () => {
     const fetch = vi.fn();
     vi.stubGlobal('fetch', fetch);
     const { container } = render(<ActionsEdit data={{ catalog: CATALOG }} />);
     expect(container.querySelector('.actions-item-sitemap a')?.getAttribute('href')).toBeNull();
     expect(screen.getByText('Site Map')).toBeTruthy();
-    expect(screen.getByText(/Previewed as you/)).toBeTruthy();
+    expect(container.querySelector('.actions-notice')).toBeNull();
     // Nothing to fetch: the node carries the catalog.
     expect(fetch).not.toHaveBeenCalled();
     vi.unstubAllGlobals();
@@ -45,7 +45,7 @@ describe('with the server’s catalog on the node', () => {
   });
 
   it('keeps the notices outside the block root and uneditable', () => {
-    const { container } = render(<ActionsEdit data={{ catalog: CATALOG }} />);
+    const { container } = render(<ActionsEdit data={{ category: 'user', catalog: CATALOG }} />);
     const notice = container.querySelector('.actions-notice')!;
     expect(notice.parentElement).toBe(container);
     expect(notice.getAttribute('contenteditable')).toBe('false');
@@ -82,7 +82,7 @@ describe('with a never-serialized node', () => {
       await pending.promise;
     });
     expect(screen.getByText('Site Map')).toBeTruthy();
-    expect(screen.getByText(/Previewed as you/)).toBeTruthy();
+    expect(document.querySelector('.actions-notice')).toBeNull();
   });
 
   it('says so when nothing could be fetched', async () => {
