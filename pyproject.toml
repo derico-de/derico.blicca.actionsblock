@@ -1,6 +1,6 @@
 [project]
 name = "derico.blicca.actionsblock"
-version = "1.0.0a1"
+version = "1.0.0a2.dev0"
 description = "Aurora Actions block: renders one category of Plone actions (site actions, portal tabs, user, object actions) as a list of links"
 readme = "README.md"
 requires-python = ">=3.10"
