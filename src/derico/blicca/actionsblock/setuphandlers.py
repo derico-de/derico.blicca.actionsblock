@@ -20,6 +20,7 @@ class HiddenProfiles:
         return [
             "derico.blicca.actionsblock:uninstall",
             "derico.blicca.actionsblock.upgrades:1001",
+            "derico.blicca.actionsblock.upgrades:1002",
         ]
 
 

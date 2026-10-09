@@ -66,7 +66,7 @@ class TestSetup:
     def test_blockaddon_record_declares_the_api_floor(self):
         """`block_api` is the floor the bundle needs, not the host's version."""
         record = block_addon_records()[RECORD_NAME]
-        assert record.block_api == "1.0"
+        assert record.block_api == "2.0"
         host = blockaddons.host_block_api()
         assert blockaddons.is_compatible(record.block_api, host)
 
