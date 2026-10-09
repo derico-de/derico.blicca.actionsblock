@@ -20,15 +20,6 @@
          to stay in lockstep. -->
     <value key="bundle">++plone++derico.blicca.actionsblock/actions-block.js</value>
 
-    <!-- The FLOOR the block needs, not the host's current version. A §2.4
-         mismatch is a fail-soft skip: the block silently vanishes from the
-         slash menu. Compatible iff same major and host minor >= declared
-         minor, so "2.0" is the most permissive declaration a 2.x host
-         accepts. This says nothing about the package's Python imports, which
-         are versioned by the `plone.blicca.auroraeditor>=1.0.0a2` floor in
-         pyproject.toml. -->
-    <value key="block_api">2.0</value>
-
     <!-- The scope-wrapped sheet that dresses BOTH surfaces: the wrapper links
          it in the head of the edit page and of the public blocks view alike. -->
     <value key="css">++plone++derico.blicca.actionsblock/actions-block.css</value>

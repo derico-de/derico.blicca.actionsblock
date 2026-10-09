@@ -3,9 +3,9 @@
 The install profile is what makes the committed bundle reachable at all: the
 JS can be perfect and the block still never appears, because ``@@aurora-edit``
 discovers add-ons per site through an ``IAuroraBlockAddon`` record and gates
-each one on *enabled*, *bundle resolves* and *block-api compatible*. Every
-gate is asserted here rather than assumed, and uninstall is asserted to undo
-exactly what install did.
+each one on *enabled*, *bundle resolves* and *no missing imported names*.
+Every gate is asserted here rather than assumed, and uninstall is asserted to
+undo exactly what install did.
 """
 
 import pytest
@@ -63,13 +63,6 @@ class TestSetup:
         assert record.enabled
         assert record.weight == 100
 
-    def test_blockaddon_record_declares_the_api_floor(self):
-        """`block_api` is the floor the bundle needs, not the host's version."""
-        record = block_addon_records()[RECORD_NAME]
-        assert record.block_api == "2.0"
-        host = blockaddons.host_block_api()
-        assert blockaddons.is_compatible(record.block_api, host)
-
     def test_blockaddon_record_is_ungated(self):
         """No insert permission: the block is generic and for every editor."""
         record = block_addon_records()[RECORD_NAME]
@@ -78,9 +71,9 @@ class TestSetup:
     def test_addon_loadable_by_wrapper(self):
         """The wrapper's discovery gates accept the add-on.
 
-        Record present, bundle resolves as a ``++plone++`` resource, block-api
-        compatible. A failure here is the difference between a block in the
-        slash menu and no block at all.
+        Record present, bundle resolves as a ``++plone++`` resource, no
+        imported name missing from the host. A failure here is the
+        difference between a block in the slash menu and no block at all.
         """
         statuses = {s.name: s for s in blockaddons.evaluate(self.portal)}
         status = statuses[RECORD_NAME]
