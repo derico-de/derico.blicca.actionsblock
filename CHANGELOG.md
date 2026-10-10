@@ -2,8 +2,7 @@
 
 ## 1.0.0a4 (unreleased)
 
-
-- Nothing changed yet.
+- pre-commit leaves build output and scaffold metadata alone.
 
 
 ## 1.0.0a3 (2026-10-10)
