@@ -1,6 +1,6 @@
 # Changelog
 
-## 1.0.0a4 (unreleased)
+## 1.0.0a4 (2026-10-12)
 
 - pre-commit leaves build output and scaffold metadata alone.
 
