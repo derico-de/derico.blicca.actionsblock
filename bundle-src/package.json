@@ -1,5 +1,5 @@
 {
-  "name": "@derico/aurora-actions-block",
+  "name": "@derico/plone-actions-block",
   "version": "1.0.0-alpha.1",
   "description": "Aurora actions block: lists one category of the site's actions (site actions, portal tabs, user, object actions) as links",
   "type": "module",

@@ -13,7 +13,7 @@ from the user actions.
 
 The block needs [plone.blicca.auroraeditor](https://github.com/derico-de/plone.blicca.auroraeditor),
 which brings the Aurora editor to Blicca. Its editor half is also a plain
-Aurora block package, `@derico/aurora-actions-block`, that can be used in an
+Aurora block package, `@derico/plone-actions-block`, that can be used in an
 Aurora frontend directly, see [Using the block in Aurora](#using-the-block-in-aurora).
 
 ## Features
@@ -179,7 +179,7 @@ changing a default, is a breaking change.
 ## Using the block in Aurora
 
 The editor half lives in `bundle-src/` as the npm package
-`@derico/aurora-actions-block` (not yet published). It registers the block
+`@derico/plone-actions-block` (not yet published). It registers the block
 and its select widget through the usual `install(config)` entry point and
 uses only upstream Aurora widgets.
 

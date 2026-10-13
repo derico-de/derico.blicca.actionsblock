@@ -3,7 +3,7 @@
 The Actions block: one category of the site's actions, listed as links,
 placed in the flow of a page or a footer. A Blicca block add-on (block add-on
 contract §3.1) whose editor half is the Aurora npm package
-`@derico/aurora-actions-block` (publishing it is a later step). Generic by
+`@derico/plone-actions-block` (publishing it is a later step). Generic by
 intent — derico.de is its first consumer, not its subject.
 
 ## Language

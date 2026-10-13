@@ -3,7 +3,8 @@
 ## 1.0.0a5 (unreleased)
 
 
-- Nothing changed yet.
+- Rename the Aurora npm package from `@derico/aurora-actions-block` to
+  `@derico/plone-actions-block` (ADR 0025 in plone.blicca.auroraeditor).
 
 
 ## 1.0.0a4 (2026-10-12)
