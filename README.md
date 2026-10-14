@@ -13,8 +13,8 @@ from the user actions.
 
 The block needs [plone.blicca.auroraeditor](https://github.com/derico-de/plone.blicca.auroraeditor),
 which brings the Aurora editor to Blicca. Its editor half is also a plain Plone
-block package for Aurora, `@derico/aurora-actions-block`, that can be used in
-an Aurora frontend directly, see
+block package for Aurora, `@derico/aurora-actions-block`, that an Aurora
+frontend can use directly, see
 [Using the block in Aurora](#using-the-block-in-aurora).
 
 ## Features
