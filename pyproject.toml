@@ -1,7 +1,7 @@
 [project]
 name = "derico.blicca.actionsblock"
 version = "1.0.0a5.dev0"
-description = "Aurora Actions block: renders one category of Plone actions (site actions, portal tabs, user, object actions) as a list of links"
+description = "Plone Actions block for the Aurora editor: renders one category of Plone actions (site actions, portal tabs, user, object actions) as a list of links"
 readme = "README.md"
 requires-python = ">=3.10"
 license = {text = "GPL-2.0-or-later"}
@@ -60,7 +60,7 @@ packages = ["src/derico"]
 [tool.plone.backend_addon.settings]
 package_name = "derico.blicca.actionsblock"
 package_title = "Derico Blicca Actionsblock"
-package_description = "Aurora Actions block: renders one category of Plone actions (site actions, portal tabs, user, object actions) as a list of links"
+package_description = "Plone Actions block for the Aurora editor: renders one category of Plone actions (site actions, portal tabs, user, object actions) as a list of links"
 package_folder = "derico/blicca/actionsblock"
 plone_version = "6.0"
 is_headless = false

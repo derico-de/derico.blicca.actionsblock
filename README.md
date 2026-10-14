@@ -12,9 +12,10 @@ footer, the portal tabs as a header bar, or a "Log in / Log out" line built
 from the user actions.
 
 The block needs [plone.blicca.auroraeditor](https://github.com/derico-de/plone.blicca.auroraeditor),
-which brings the Aurora editor to Blicca. Its editor half is also a plain
-Aurora block package, `@derico/plone-actions-block`, that can be used in an
-Aurora frontend directly, see [Using the block in Aurora](#using-the-block-in-aurora).
+which brings the Aurora editor to Blicca. Its editor half is also a plain Plone
+block package for Aurora, `@derico/aurora-actions-block`, that can be used in
+an Aurora frontend directly, see
+[Using the block in Aurora](#using-the-block-in-aurora).
 
 ## Features
 
@@ -97,7 +98,7 @@ that holds nothing for the current user renders an empty block.
   (`sitemap`, `contact`, `folderContents`, ...), so a theme can style or hide
   a single action or attach an icon to it.
 - Block width and background classes are added by the host on a wrapper
-  around this markup, as for every Aurora block.
+  around this markup, as for every Plone block.
 
 Icons are not rendered. A theme that wants icons can key on the per-item class.
 
@@ -179,7 +180,7 @@ changing a default, is a breaking change.
 ## Using the block in Aurora
 
 The editor half lives in `bundle-src/` as the npm package
-`@derico/plone-actions-block` (not yet published). It registers the block
+`@derico/aurora-actions-block` (not yet published). It registers the block
 and its select widget through the usual `install(config)` entry point and
 uses only upstream Aurora widgets.
 
